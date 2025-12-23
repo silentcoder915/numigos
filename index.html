@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Numigos - Nutech Community</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap JS for mobile menu functionality -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" defer></script>
+    <!-- Auth Script -->
+    <script src="auth.js" defer></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container nav-container">
+            <a href="index.html" class="logo">numigos</a>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <div class="nav-links">
+                <a href="blog.html" style="color: var(--text-dark);">Blog</a>
+                <a href="community.html">Community</a>
+                <!-- Auth links will be added dynamically by auth.js -->
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title" >
+                    NUTECH
+                    <br>
+                    YOUR UNIVERSITY 
+                    <br> 
+                    YOUR COMMUNITY</span>
+                </h1>
+                <p class="hero-description">
+                    Join the official student community of NUTECH. Share resources, 
+                    collaborate on projects, and build your network with fellow students.
+                </p>
+                <div class="hero-buttons">
+                    <a href="community.html" class="btn btn-primary">Explore Communities</a>
+                    <a href="blog.html" class="btn btn-outline">Read blogs</a>
+                </div>
+            </div>
+            
+            <div class="hero-image-wrapper">
+                <img src="https://avatars.mds.yandex.net/i?id=70d17836d8c1f88085a29a79063da53667b6f3eb-4034676-images-thumbs&n=13" alt="Students at Nutech Campus" class="hero-image">
+            </div>
+        </div>
+    </header>
+
+    <script>
+        // Mobile menu toggle functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuBtn = document.querySelector('.mobile-menu-btn');
+            const navLinks = document.querySelector('.nav-links');
+            const menuBtnSpans = document.querySelectorAll('.mobile-menu-btn span');
+
+            menuBtn.addEventListener('click', function() {
+                // Toggle mobile menu
+                navLinks.classList.toggle('active');
+                
+                // Animate hamburger to X
+                menuBtnSpans.forEach((span, index) => {
+                    if (navLinks.classList.contains('active')) {
+                        // Transform to X
+                        if (index === 0) {
+                            span.style.transform = 'rotate(45deg) translate(5px, 5px)';
+                        } else if (index === 1) {
+                            span.style.opacity = '0';
+                        } else if (index === 2) {
+                            span.style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                        }
+                    } else {
+                        // Revert to hamburger
+                        if (index === 0) {
+                            span.style.transform = 'none';
+                        } else if (index === 1) {
+                            span.style.opacity = '1';
+                        } else if (index === 2) {
+                            span.style.transform = 'none';
+                        }
+                    }
+                });
+            });
+
+            // Close menu when clicking on a link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    menuBtnSpans.forEach((span, index) => {
+                        if (index === 0) span.style.transform = 'none';
+                        if (index === 1) span.style.opacity = '1';
+                        if (index === 2) span.style.transform = 'none';
+                    });
+                });
+            });
+
+            // Close menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (!e.target.closest('.nav-container') && navLinks.classList.contains('active')) {
+                    navLinks.classList.remove('active');
+                    menuBtnSpans.forEach((span, index) => {
+                        if (index === 0) span.style.transform = 'none';
+                        if (index === 1) span.style.opacity = '1';
+                        if (index === 2) span.style.transform = 'none';
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  name         String
+  email        String    @unique
+  password     String
+  createdAt    DateTime  @default(now())
+  
+  posts        Post[]
+  comments     Comment[]
+  createdCommunities Community[] @relation("CreatedCommunities")
+  joinedCommunities  Community[] @relation("UserCommunities")
+}
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  content     String
+  imageUrl    String?
+  category    String?
+  createdAt   DateTime  @default(now())
+  
+  authorId    Int
+  author      User      @relation(fields: [authorId], references: [id])
+  
+  comments    Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  content   String
+  createdAt DateTime @default(now())
+  
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id])
+  
+  authorId  Int
+  author    User     @relation(fields: [authorId], references: [id])
+}
+
+model Community {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  description String
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  
+  creatorId   Int
+  creator     User     @relation("CreatedCommunities", fields: [creatorId], references: [id])
+  
+  members     User[]   @relation("UserCommunities")
+}
