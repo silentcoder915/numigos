@@ -249,9 +249,15 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label" style="font-weight: 500; margin-bottom: 0.5rem;">Cover Image URL</label>
-                    <input type="text" class="form-input" placeholder="https://..." id="comm-img-url"
-                        style="padding: 0.8rem; border-radius: 8px; border: 1px solid #E5E7EB;">
+                    <label class="form-label" style="font-weight: 500; margin-bottom: 0.5rem;">Cover Image</label>
+                    <div id="comm-file-upload-area" class="file-upload-area">
+                        <div class="file-upload-text">
+                            <span style="font-size: 2rem;">📷</span>
+                            <p style="margin-top: 0.5rem; color: #6B7280;">Click or drop image here</p>
+                        </div>
+                        <img id="comm-image-preview" class="file-preview" src="" alt="Preview">
+                        <input type="file" id="comm-image-file" accept="image/*" style="display: none;">
+                    </div>
                 </div>
 
                 <button type="submit" class="btn btn-primary"

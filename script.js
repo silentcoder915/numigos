@@ -66,6 +66,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (createBlogForm) {
         createBlogForm.addEventListener('submit', handleCreateBlog);
     }
+
+    // Community Image Upload Logic
+    const commFileArea = document.getElementById('comm-file-upload-area');
+    const commFileInput = document.getElementById('comm-image-file');
+    if (commFileArea && commFileInput) {
+        commFileArea.addEventListener('click', () => commFileInput.click());
+        commFileInput.addEventListener('change', handleCommFileSelect);
+
+        // Drag and drop
+        commFileArea.addEventListener('dragover', (e) => { e.preventDefault(); commFileArea.style.borderColor = '#F97316'; });
+        commFileArea.addEventListener('dragleave', (e) => { e.preventDefault(); commFileArea.style.borderColor = '#D1D5DB'; });
+        commFileArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            commFileArea.style.borderColor = '#D1D5DB';
+            if (e.dataTransfer.files.length) {
+                commFileInput.files = e.dataTransfer.files;
+                handleCommFileSelect({ target: commFileInput });
+            }
+        });
+    }
 });
 
 /* --- UI HELPERS --- */
@@ -184,6 +204,24 @@ function handleFileSelect(e) {
             preview.src = currentBlogImageBase64;
             preview.style.display = 'block';
             document.querySelector('.file-upload-text').style.display = 'none';
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+// Community Image handling
+let currentCommImageBase64 = null;
+function handleCommFileSelect(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function (evt) {
+            currentCommImageBase64 = evt.target.result;
+            const preview = document.getElementById('comm-image-preview');
+            preview.src = currentCommImageBase64;
+            preview.style.display = 'block';
+            const uploadText = document.querySelector('#comm-file-upload-area .file-upload-text');
+            if (uploadText) uploadText.style.display = 'none';
         };
         reader.readAsDataURL(file);
     }
@@ -740,8 +778,12 @@ async function handleCreateCommunity(e) {
     // Get inputs
     const name = e.target.querySelector('input[type="text"]').value;
     const description = e.target.querySelector('textarea').value;
-    const imageUrlInput = document.getElementById('comm-img-url');
-    const imageUrl = imageUrlInput ? imageUrlInput.value : '';
+    const imageUrl = currentCommImageBase64 || '';
+
+    if (!imageUrl) {
+        showToast('Please choose a cover image', 'error');
+        return;
+    }
 
     const btn = e.target.querySelector('button');
     const originalText = btn.innerText;
@@ -763,6 +805,12 @@ async function handleCreateCommunity(e) {
             closeCreateCommunityModal();
             loadCommunities();
             e.target.reset();
+            // Reset image preview
+            const preview = document.getElementById('comm-image-preview');
+            if (preview) preview.style.display = 'none';
+            const uploadText = document.querySelector('#comm-file-upload-area .file-upload-text');
+            if (uploadText) uploadText.style.display = 'block';
+            currentCommImageBase64 = null;
         } else {
             const data = await res.json();
             showToast(data.message || 'Failed to create', 'error');
